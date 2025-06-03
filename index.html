@@ -3,11 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
     <title>kadai03_memo</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+    <h1>今日の出来事</h1>
+    <p id="todayDate"></p><!-- 日付が表示される  -->
+    <textarea  id="todayDiary"></textarea>
+
+    <h2>感情ボタン</h2>
+    <button id="happy">幸せ</button>
+    <button id="sad">悲しい</button>
+    <button id="surprise">驚き</button>
+    <button id="anger">怒り</button>
+    <button id="Fatigue">疲れ</button>
+    <button id="Healing">癒し</button><br>
+
+
+    <button id="saveBtn">保存</button>
+
+
+    <h2>過去の日記</h2>
+    <div id ="diaryList"></div>
+
+    <button id="diaryListBtn">開く</button>
+
+
+ 
+
+    <!--  -->
+    <script>
+
+        let selectedEmotion = "";
+        // 今日の日付
+        $(document).ready(function(){
+            // ready：ページ読み込みが完了したらこの中の処理を実行する。document＝HTML全体のこと
+            
+            const today = new Date ();　// new Date =今の日付と時刻の取得。それを変数に代入
+            const dateStr = today.toLocaleDateString("ja-JP",{
+                // toLocaleDateString＝日付を日本語の形式で表示するための関数「yyyt/mm/dd」
+                // "ja-JP"：日本の書式（和暦ではなく西暦）で表示する
+                
+                year:"numeric",
+                month:"2-digit",
+                day:"2-digit"
+                //{ year: "numeric", month: "2-digit", day: "2-digit" }→ 年は4桁、月と日は2桁で出力
+            });
+            $("#todayDate").text("日付："+dateStr);//表示
+        });
+        
+        // 1保存ボタンを押すと保存ができるようにする
+        　　
+        $("#saveBtn").on("click",function(){
+            const text = $("#todayDiary").val().trim();
+                //1-1日記が空欄の場合
+                if (text===""){
+                    alert("日記が空白です！");
+                    return;
+                }
+
+                //1-2日記を日付、テキスト、感情ボタンで保存する場合
+                    //日付の保存
+            
+                        const today = new Date ();　// new Date =今の日付と時刻の取得。それを変数に代入
+                        const dateStr = today.toLocaleDateString("ja-JP",{
+                            
+                            year:"numeric",
+                            month:"2-digit",
+                            day:"2-digit"
+
+                        });
+
+                        // すでに保存されている日記一覧を取得(ローカルストレージは文字列しか保存できないためobject化)
+                        const diaries = JSON.parse(localStorage.getItem("diaries") || "[]");//diaries or 空白　を表示
+
+                        // 今回の入力内容(objectで名前の設定)
+                        let newEntry = {
+                            date: dateStr,
+                            text: $("#todayDiary").val().trim(),//trim()=空白での保存を弾き、無駄なデータ保存を防ぐことができる
+                            emotion: selectedEmotion || "未選択" 
+                        };
+
+
+                        // 配列に追加して保存
+                        diaries.push(newEntry);
+                        localStorage.setItem("diaries", JSON.stringify(diaries));
+
+
+            alert("保存しました");
+            $("#todayDiary").val("");//入力欄リセット
+            selectedEmotion = ""; //感情もリセット
+        })
+
+
+
+    //２開くボタンを押すと過去の日記が振り返れるようにする
     
-カレンダー
+            $("#diaryListBtn").on("click",function(){
+                const diaries =JSON.parse(localStorage.getItem("diaries")||"[]");
+                    //diaries　=　localStorageから出した日記の配列
+
+                $("#diaryList").empty();//前の表示リセット
+
+                if(diaries.length === 0){//もしdiariesの中身が０だったら
+                    $("#diaryList").append("保存された日記はありません")
+                    return;
+                }
+
+                diaries.reverse().forEach(entry => {
+                    //.reverse() は配列を 逆順に並び替える関数→新しい日記が先に表示される
+                    //.forEach(entry => { ... })配列の中の要素（ここでは日記）を 1件ずつ処理する関数.entry は 1件分の日記オブジェクト
+
+                    const html =`
+                    <div class="entry">
+                         <strong>📅 ${entry.date}</strong>｜感情：${entry.emotion}
+                         ${entry.text}
+                     </div> 
+                     `;
+                     $("#diaryList").append(html);               
+
+
+                });
+
+
+            });
+
+    </script>
+
 
 </body>
 </html>
