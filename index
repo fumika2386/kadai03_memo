@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>kadai03_memo</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>今日の出来事</h1>
+    <p id="todayDate"></p><!-- 日付が表示される  -->
+    <textarea  id="todayDiary"></textarea>
+
+    <h2>感情ボタン</h2>
+    <button id="happy">
+        <img src="./img/happy.jpeg" alt="幸せ"class="icom">
+    </button>
+    <button id="sad">悲しい</button>
+    <button id="surprise">驚き</button>
+    <button id="anger">怒り</button>
+    <button id="Fatigue">疲れ</button>
+    <button id="Healing">癒し</button><br>
+
+
+    <button id="saveBtn">保存</button>
+
+
+    <h2>過去の日記</h2>
+    <div id ="diaryList"></div>
+
+    <button id="diaryListBtn">開く</button>
+
+
+ 
+
+    <!--  -->
+    <script>
+        // 今日の日付
+        $(document).ready(function(){
+            // ready：ページ読み込みが完了したらこの中の処理を実行する。document＝HTML全体のこと
+            const today = new Date ();　// new Date =今の日付と時刻の取得。それを変数に代入
+            const dateStr = today.toLocaleDateString("ja-JP",{
+                // toLocaleDateString＝日付を日本語の形式で表示するための関数「yyyt/mm/dd」
+                // "ja-JP"：日本の書式（和暦ではなく西暦）で表示する
+                year:"numeric",
+                month:"2-digit",
+                day:"2-digit"
+                //{ year: "numeric", month: "2-digit", day: "2-digit" }→ 年は4桁、月と日は2桁で出力
+            });
+            $("#todayDate").text("日付："+dateStr);//表示
+        });
+
+
+        // すでに保存されている日記一覧を取得(ローカルストレージは文字列しか保存できないためobject化)
+        const diaries = JSON.parse(localStorage.getItem("diaries") || "[]");//diaries or 空白　を表示
+
+
+        // 今回の入力内容(objectで設定)
+        let newEntry = {
+            'date': 'dateStr',
+            'text': '$("#todayDiary").val().trim()',//trim()=空白での保存を弾き、無駄なデータ保存を防ぐことができる
+            'emotion': 'selectedEmotion || "未選択"'
+            };
+
+        // 配列に追加して保存
+            diaries.push(newEntry);
+            localStorage.setItem("diaries", JSON.stringify(diaries));
+
+        // 保存ボタンを機能させる
+        $("#saveBtn").on("click",function(){
+            const value = $("#todayDiary").val();
+            localStorage.setItem("diary",value);
+            alert("保存しました");
+        })
+
+
+    </script>
+
+
+</body>
+</html>
