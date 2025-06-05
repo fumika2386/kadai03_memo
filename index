@@ -13,7 +13,9 @@
     <textarea  id="todayDiary"></textarea>
 
     <h2>感情ボタン</h2>
-    <button id="happy">幸せ</button>
+    <button id="happy">
+        <img src="./img/happy.jpeg" alt="幸せ"class="icom">
+    </button>
     <button id="sad">悲しい</button>
     <button id="surprise">驚き</button>
     <button id="anger">怒り</button>
